@@ -78,10 +78,10 @@ export default function VoiceRecorder({ onClose }: VoiceRecorderProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Voice meal logging"
-      className="fixed inset-0 z-50 flex flex-col bg-black/90"
+      className="fixed inset-0 z-50 flex flex-col bg-slate-950/95"
     >
-      <div className="flex items-center justify-between bg-black px-4 py-3">
-        <h2 className="text-white font-medium">Voice Log</h2>
+      <div className="flex items-center justify-between bg-slate-950 px-4 py-3">
+        <h2 className="font-bold text-white">Voice Log</h2>
         <button
           onClick={onClose}
           className="rounded-full p-1 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
@@ -91,14 +91,14 @@ export default function VoiceRecorder({ onClose }: VoiceRecorderProps) {
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6" aria-live="polite">
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6" aria-live="polite">
         <button
           onClick={state === "idle" ? startRecording : stopRecording}
           disabled={state === "processing"}
           className={`flex h-20 w-20 items-center justify-center rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${
             state === "recording"
-              ? "animate-pulse bg-red-600"
-              : "bg-blue-600 hover:bg-blue-700"
+              ? "animate-pulse bg-red-500"
+              : "bg-sky-500 hover:bg-sky-400"
           } disabled:opacity-50`}
           aria-label={state === "recording" ? "Stop recording" : "Start recording"}
         >
@@ -109,7 +109,7 @@ export default function VoiceRecorder({ onClose }: VoiceRecorderProps) {
           )}
         </button>
 
-        <p className="text-white text-sm">
+        <p className="max-w-xs text-center text-sm font-medium text-slate-200">
           {state === "idle" && 'Tap to speak. Try: "I had two rotis and dal tadka."'}
           {state === "recording" && "Listening… tap to stop (max 30s)"}
           {state === "processing" && "Processing with Speech-to-Text + Gemini…"}
@@ -122,15 +122,22 @@ export default function VoiceRecorder({ onClose }: VoiceRecorderProps) {
         )}
 
         {result && (
-          <div className="w-full rounded-xl bg-white p-4 space-y-2">
-            <p className="font-semibold text-gray-900">{result.total_calories_kcal} kcal</p>
+          <div className="w-full space-y-3 rounded-[28px] bg-white p-5 shadow-xl">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-sky-700">Voice estimate</p>
+              <p className="rounded-full bg-slate-950 px-3 py-1 text-sm font-black text-white">
+                {result.total_calories_kcal} kcal
+              </p>
+            </div>
             <ul className="space-y-1">
               {result.items.map((item, i) => (
-                <li key={i} className="text-sm text-gray-700">
-                  {item.name} — {item.calories_kcal} kcal
+                <li key={i} className="flex items-center justify-between rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                  <span className="font-semibold">{item.name}</span>
+                  <span>{item.calories_kcal} kcal</span>
                 </li>
               ))}
             </ul>
+            <p className="text-xs leading-5 text-slate-500">{result.notes}</p>
           </div>
         )}
       </div>

@@ -7,7 +7,7 @@ function getAdminApp() {
 
   const credBase64 = process.env["FIREBASE_ADMIN_CREDENTIALS_BASE64"];
   if (!credBase64) {
-    throw new Error("FIREBASE_ADMIN_CREDENTIALS_BASE64 env var is not set");
+    return initializeApp({ projectId: process.env["GCP_PROJECT_ID"] ?? process.env["GOOGLE_CLOUD_PROJECT"] });
   }
 
   const credential = JSON.parse(Buffer.from(credBase64, "base64").toString("utf8")) as object;

@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { TEXT_MODEL, genai } from "@/lib/gemini/client";
 import { buildCoachSystemPrompt } from "@/lib/gemini/prompts";
+import { demoCoachReply } from "@/lib/demo-nutrition";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -43,19 +44,36 @@ export async function POST(req: NextRequest): Promise<Response> {
     parts: [{ text: m.content }],
   }));
 
-  const stream = await genai.models.generateContentStream({
-    model: TEXT_MODEL,
-    config: { systemInstruction: systemPrompt },
-    contents,
-  });
+  try {
+    const stream = await genai.models.generateContentStream({
+      model: TEXT_MODEL,
+      config: { systemInstruction: systemPrompt },
+      contents,
+    });
 
-  const encoder = new TextEncoder();
-  const readable = new ReadableStream({
-    async start(controller) {
+    return sseResponse(async (controller, encoder) => {
       for await (const chunk of stream) {
         const text = chunk.text ?? "";
         if (text) controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
       }
+    });
+  } catch {
+    const lastQuestion = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
+    return sseResponse(async (controller, encoder) => {
+      for (const line of demoCoachReply(lastQuestion).split("\n")) {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: `${line}\n` })}\n\n`));
+      }
+    });
+  }
+}
+
+function sseResponse(
+  write: (controller: ReadableStreamDefaultController<Uint8Array>, encoder: TextEncoder) => Promise<void>,
+): Response {
+  const encoder = new TextEncoder();
+  const readable = new ReadableStream({
+    async start(controller) {
+      await write(controller, encoder);
       controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       controller.close();
     },

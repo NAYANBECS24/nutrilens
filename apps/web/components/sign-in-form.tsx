@@ -33,7 +33,7 @@ export default function SignInForm() {
       <button
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 disabled:opacity-50"
+        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-slate-950 px-4 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 disabled:opacity-50"
         aria-label="Continue with Google"
       >
         <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -54,8 +54,11 @@ export default function SignInForm() {
             d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
           />
         </svg>
-        {loading ? "Signing in…" : "Continue with Google"}
+        {loading ? "Opening NutriLens..." : "Continue to dashboard"}
       </button>
+      <p className="text-center text-xs leading-5 text-slate-500">
+        Demo fallback is enabled, so the app works even while Gemini keys are being configured.
+      </p>
     </div>
   );
 }

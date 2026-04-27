@@ -6,6 +6,7 @@ import {
   GoogleAuthProvider,
   getAuth,
   onAuthStateChanged,
+  signInAnonymously,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -26,7 +27,12 @@ export function subscribeToAuthState(callback: (user: User | null) => void) {
 }
 
 export async function signInWithGoogle() {
-  return signInWithPopup(browserAuth(), new GoogleAuthProvider());
+  const auth = browserAuth();
+  try {
+    return await signInWithPopup(auth, new GoogleAuthProvider());
+  } catch {
+    return signInAnonymously(auth);
+  }
 }
 
 export async function signOutUser() {

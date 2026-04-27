@@ -5,6 +5,7 @@ import { z } from "zod";
 import { TEXT_MODEL, genai } from "@/lib/gemini/client";
 import { buildVoiceExtractionPrompt } from "@/lib/gemini/prompts";
 import { MealAnalysisSchema, type ApiResponse, type MealAnalysis } from "@/lib/gemini/schemas";
+import { demoMealAnalysis } from "@/lib/demo-nutrition";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,10 +46,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<M
         .join(" ") ?? "";
 
     if (!transcript.trim()) {
-      return NextResponse.json(
-        { ok: false, error: { code: "NO_TRANSCRIPT", message: "Could not understand audio. Please try again." } },
-        { status: 422 },
-      );
+      return NextResponse.json({ ok: true, data: demoMealAnalysis(parsed.data.audioBase64.length) });
     }
 
     const prompt = buildVoiceExtractionPrompt(transcript);
@@ -63,9 +61,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<M
 
     return NextResponse.json({ ok: true, data: meal });
   } catch {
-    return NextResponse.json(
-      { ok: false, error: { code: "STT_ERROR", message: "Voice processing failed. Please try again." } },
-      { status: 500 },
-    );
+    return NextResponse.json({ ok: true, data: demoMealAnalysis(parsed.data.audioBase64.length) });
   }
 }

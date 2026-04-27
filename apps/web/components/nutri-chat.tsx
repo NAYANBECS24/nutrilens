@@ -1,6 +1,6 @@
 "use client";
 
-import { Send } from "lucide-react";
+import { Bot, Send, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -80,17 +80,32 @@ export default function NutriChat() {
   }
 
   return (
-    <div className="flex h-screen flex-col">
-      <header className="border-b px-4 py-3">
-        <h1 className="font-semibold text-gray-900">NutriLens Coach</h1>
-        <p className="text-xs text-gray-500">Powered by Gemini 2.5</p>
+    <div className="flex h-screen flex-col bg-[#f5f7f1]">
+      <header className="mx-auto w-full max-w-md px-4 pt-5">
+        <div className="rounded-[28px] bg-slate-950 p-5 text-white shadow-xl shadow-emerald-950/10">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-300 text-slate-950">
+              <Bot size={22} aria-hidden="true" />
+            </div>
+            <div>
+              <h1 className="font-black">NutriLens Coach</h1>
+              <p className="text-xs text-slate-300">Gemini-ready with demo fallback</p>
+            </div>
+          </div>
+        </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4" aria-live="polite" aria-label="Chat messages">
+      <div className="mx-auto w-full max-w-md flex-1 space-y-4 overflow-y-auto px-4 py-4" aria-live="polite" aria-label="Chat messages">
         {messages.length === 0 && (
-          <p className="text-center text-sm text-gray-400 mt-12">
-            Ask me anything about your meals and nutrition goals.
-          </p>
+          <div className="mt-6 rounded-[28px] bg-white p-5 text-center shadow-sm ring-1 ring-slate-200">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-800">
+              <Sparkles size={22} aria-hidden="true" />
+            </div>
+            <p className="font-black text-slate-950">Ask for a smarter next bite</p>
+            <p className="mt-1 text-sm leading-6 text-slate-500">
+              Try: "I ate biryani for lunch, what should dinner be?"
+            </p>
+          </div>
         )}
         {messages.map((msg, i) => (
           <div
@@ -100,8 +115,8 @@ export default function NutriChat() {
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
                 msg.role === "user"
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-800"
+                  ? "bg-emerald-700 text-white"
+                  : "bg-white text-slate-800 shadow-sm ring-1 ring-slate-200"
               }`}
             >
               {msg.role === "assistant" ? (
@@ -115,7 +130,7 @@ export default function NutriChat() {
         <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={sendMessage} className="border-t px-4 py-3 flex gap-2">
+      <form onSubmit={sendMessage} className="mx-auto flex w-full max-w-md gap-2 border-t border-slate-200 bg-white/90 px-4 py-3 backdrop-blur">
         <label htmlFor="chat-input" className="sr-only">Type a message</label>
         <input
           id="chat-input"
@@ -123,13 +138,13 @@ export default function NutriChat() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask your coach…"
           disabled={streaming}
-          className="flex-1 rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+          className="flex-1 rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700 disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={streaming || !input.trim()}
           aria-label="Send message"
-          className="rounded-xl bg-green-600 p-2 text-white hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 disabled:opacity-50"
+          className="rounded-2xl bg-slate-950 p-3 text-white hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 disabled:opacity-50"
         >
           <Send size={18} aria-hidden="true" />
         </button>
